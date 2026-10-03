@@ -16,17 +16,27 @@ from typing import Optional, Dict, Any
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QTabWidget,
     QLabel, QComboBox, QPushButton, QStatusBar, QFileDialog,
-    QMessageBox, QApplication
+    QMessageBox, QApplication, QLineEdit, QSlider, QGroupBox, QFrame
 )
 from PyQt6.QtCore import Qt, pyqtSignal, QTimer
 from PyQt6.QtGui import QIcon, QFont
 
-from .styles import get_complete_style, TEXT_PRIMARY, PASTEL_GREEN_2, PASTEL_GOLD_2
-from .key_grid import KeyGridWithPreview
-from .knob_panel import KnobPanel
-from .touchscreen import TouchscreenConfig
-from ..core.device_handler import DeviceHandler, DeviceInfo, DeviceState
-from ..core.config_manager import (
+# Add paths for imports
+msdpro_path = Path(__file__).parent.parent
+if str(msdpro_path) not in sys.path:
+    sys.path.insert(0, str(msdpro_path))
+
+from ui.styles import (
+    get_complete_style, TEXT_PRIMARY, TEXT_SECONDARY, 
+    PASTEL_GREEN_1, PASTEL_GREEN_2, PASTEL_GREEN_3, PASTEL_GREEN_4,
+    PASTEL_GOLD_1, PASTEL_GOLD_2, PASTEL_GOLD_3,
+    DARK_GRAY_1, DARK_GRAY_2, DARK_GRAY_3, DARK_GRAY_4
+)
+from ui.key_grid import KeyGridWithPreview
+from ui.knob_panel import KnobPanel
+from ui.touchscreen import TouchscreenConfig
+from core.device_handler import DeviceHandler, DeviceInfo, DeviceState
+from core.config_manager import (
     ConfigManager, DeviceConfig, ActionType, KeyAction, KnobAction, Direction
 )
 

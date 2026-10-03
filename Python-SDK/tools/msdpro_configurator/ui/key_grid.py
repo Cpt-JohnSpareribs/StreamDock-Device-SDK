@@ -11,13 +11,20 @@ This widget allows:
 
 from PyQt6.QtWidgets import (
     QWidget, QGridLayout, QPushButton, QLabel, 
-    QVBoxLayout, QHBoxLayout, QFrame
+    QVBoxLayout, QHBoxLayout, QFrame, QSizePolicy
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QPixmap, QIcon, QFont
 from typing import Optional, Dict, Callable
+import sys
+from pathlib import Path
 
-from .styles import KEY_BUTTON_STYLE, TEXT_PRIMARY, DARK_GRAY_2, PASTEL_GREEN_2
+# Add paths for imports
+msdpro_path = Path(__file__).parent.parent
+if str(msdpro_path) not in sys.path:
+    sys.path.insert(0, str(msdpro_path))
+
+from ui.styles import KEY_BUTTON_STYLE, TEXT_PRIMARY, DARK_GRAY_2, PASTEL_GREEN_2
 
 
 class KeyButton(QPushButton):
@@ -57,9 +64,6 @@ class KeyButton(QPushButton):
         
         # Connect click signal
         self.clicked.connect(self._on_clicked)
-        
-        # Enable word wrap for longer text
-        self.setWordWrap(True)
     
     def _on_clicked(self):
         """Handle button click."""
@@ -173,21 +177,22 @@ class KeyGrid(QWidget):
         
         # Add layouts to main layout
         main_layout.addLayout(self.main_grid)
-        main_layout.addLayout(self.secondary_layout)
         
         # Add label for secondary keys
         secondary_label = QLabel("Secondary Screen Keys (11-14)")
         secondary_label.setStyleSheet(f"color: {TEXT_PRIMARY}; font-weight: bold;")
-        main_layout.insertLayout(1, secondary_label.__class__())
-        main_layout.insertWidget(1, secondary_label)
+        main_layout.addWidget(secondary_label)
+        
+        # Add secondary keys layout
+        main_layout.addLayout(self.secondary_layout)
         
         # Store current selection
         self._selected_key: Optional[int] = None
         
         # Set size policy
         self.setSizePolicy(
-            QWidget.SizePolicy.Policy.Expanding,
-            QWidget.SizePolicy.Policy.Expanding
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Expanding
         )
     
     def _on_key_clicked(self, key_index: int):
@@ -270,6 +275,9 @@ class KeyGridWithPreview(QWidget):
     - Action configuration for selected key
     """
     
+    # Signal emitted when a key is selected (key_index)
+    key_selected = pyqtSignal(int)
+    
     def __init__(self, parent: Optional[QWidget] = None):
         """
         Initialize the key grid with preview.
@@ -286,7 +294,7 @@ class KeyGridWithPreview(QWidget):
         
         # Create key grid
         self.key_grid = KeyGrid()
-        self.key_grid.key_selected.connect(self._on_key_selected)
+        self.key_grid.key_selected.connect(self._on_internal_key_selected)
         
         # Create preview panel
         self.preview_panel = QFrame()
@@ -334,13 +342,18 @@ class KeyGridWithPreview(QWidget):
         
         # Set size policy
         self.setSizePolicy(
-            QWidget.SizePolicy.Policy.Expanding,
-            QWidget.SizePolicy.Policy.Expanding
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Expanding
         )
     
-    def _on_key_selected(self, key_index: int):
-        """Handle key selection."""
+    def _on_internal_key_selected(self, key_index: int):
+        """Handle internal key selection and forward signal."""
         self._selected_key = key_index
+        self._update_preview(key_index)
+        self.key_selected.emit(key_index)
+    
+    def _update_preview(self, key_index: int):
+        """Update preview panel with selected key info."""
         self.preview_title.setText(f"Key {key_index}")
         
         # Get the button to get its image

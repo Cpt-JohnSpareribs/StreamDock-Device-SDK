@@ -13,8 +13,15 @@ import sys
 import argparse
 from pathlib import Path
 
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent))
+# Add the msdpro_configurator directory to path
+msdpro_path = Path(__file__).parent
+if str(msdpro_path) not in sys.path:
+    sys.path.insert(0, str(msdpro_path))
+
+# Also add the parent tools directory
+tools_path = msdpro_path.parent
+if str(tools_path) not in sys.path:
+    sys.path.insert(0, str(tools_path))
 
 from ui.main_window import run_application
 

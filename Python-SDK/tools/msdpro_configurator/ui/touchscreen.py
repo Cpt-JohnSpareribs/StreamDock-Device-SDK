@@ -10,18 +10,25 @@ This widget allows:
 
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
-    QPushButton, QFileDialog, QGroupBox, QComboBox, QLineEdit
+    QPushButton, QFileDialog, QGroupBox, QComboBox, QLineEdit, QSizePolicy
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QPixmap, QIcon, QFont, QDragEnterEvent, QDropEvent
 from PyQt6.QtCore import QMimeData, QUrl
 from typing import Optional, Dict
+import sys
+from pathlib import Path
 
-from .styles import (
+# Add paths for imports
+msdpro_path = Path(__file__).parent.parent
+if str(msdpro_path) not in sys.path:
+    sys.path.insert(0, str(msdpro_path))
+
+from ui.styles import (
     TOUCHSCREEN_STYLE, TEXT_PRIMARY, TEXT_SECONDARY,
     PASTEL_GREEN_2, PASTEL_GREEN_3, DARK_GRAY_2, DARK_GRAY_3, PASTEL_GOLD_2
 )
-from ..core.config_manager import ActionType
+from core.config_manager import ActionType
 
 
 class TouchscreenPreview(QLabel):
@@ -299,8 +306,8 @@ class TouchscreenConfig(QWidget):
         
         # Set size policy
         self.setSizePolicy(
-            QWidget.SizePolicy.Policy.Expanding,
-            QWidget.SizePolicy.Policy.Expanding
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Expanding
         )
     
     def _browse_for_image(self):

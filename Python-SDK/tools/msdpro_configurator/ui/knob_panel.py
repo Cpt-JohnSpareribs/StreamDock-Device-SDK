@@ -10,17 +10,24 @@ This widget allows:
 
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
-    QGroupBox, QComboBox, QLineEdit, QDial, QPushButton
+    QGroupBox, QComboBox, QLineEdit, QDial, QPushButton, QSizePolicy
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 from typing import Optional, Dict, List, Callable
+import sys
+from pathlib import Path
 
-from .styles import (
+# Add paths for imports
+msdpro_path = Path(__file__).parent.parent
+if str(msdpro_path) not in sys.path:
+    sys.path.insert(0, str(msdpro_path))
+
+from ui.styles import (
     KNOB_STYLE, TEXT_PRIMARY, TEXT_SECONDARY, 
     PASTEL_GOLD_2, PASTEL_GOLD_3, DARK_GRAY_2, DARK_GRAY_3
 )
-from ..core.config_manager import ActionType, Direction
+from core.config_manager import ActionType, Direction
 
 
 class KnobControl(QWidget):
@@ -127,8 +134,8 @@ class KnobControl(QWidget):
         
         # Set size policy
         self.setSizePolicy(
-            QWidget.SizePolicy.Policy.Preferred,
-            QWidget.SizePolicy.Policy.Preferred
+            QSizePolicy.Policy.Preferred,
+            QSizePolicy.Policy.Preferred
         )
     
     def get_actions(self) -> Dict[str, Dict[str, str]]:
@@ -252,8 +259,8 @@ class KnobPanel(QWidget):
         
         # Set size policy
         self.setSizePolicy(
-            QWidget.SizePolicy.Policy.Expanding,
-            QWidget.SizePolicy.Policy.Expanding
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Expanding
         )
     
     def get_all_actions(self) -> Dict[int, Dict[str, Dict[str, str]]]:
